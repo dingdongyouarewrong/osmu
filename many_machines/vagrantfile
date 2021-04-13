@@ -1,0 +1,46 @@
+$mach_quant = STDIN.gets.chomp
+
+
+
+if mach_quant>253 and mach_quant<1:
+    puts "wrong number"
+else:
+    Vagrant.configure("2") do |config|
+
+        config.vm.provider "virtualbox" do |vb|
+            vb.gui = false
+            vb.memory=256
+            vb.cpus=1
+            vb.check_guest_additions=false
+        config.vm.box_check_update=false
+        config.vm.box="ubuntu/trusty64"
+
+        config.vm.provision "shell", inline: $script
+
+     end
+
+    (1..$mach_quant).each do |i|
+        config.vm.define "node#{i}" do |node|
+            node.vm.network "public_network", ip: "192.168.1.#{i}"
+            node.vm.hostname = "node#{i}"
+            if i==1
+                node.vm.provision "shell",
+                    inline: "sudo apt install nginx"
+            else
+                node.vm.provision "shell",
+
+                inline: "sudo apt install tomcat9 tomcat9-admin"
+                sudo ufw allow from any to any port 8080 proto tcp
+                cd /usr/local/tomcat9/webapps/ROOT
+                touch index.html
+                echo 'Hi! This is computer number #{i} with ip 192.168.1.#{i}' > index.html
+                sudo systemctl enable tomcat"
+        end
+
+    end
+
+    (1..$mach_quant).each do |i|
+        config.vm.define "node#{i}" do |node|
+            node.vm.provision "shell", inline: "echo '192.168.1.#{i}    ubuntu#{i}' > /etc/hosts"
+
+end

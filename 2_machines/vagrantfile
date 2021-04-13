@@ -1,0 +1,39 @@
+$script = <<END
+sudo apt update
+sudo apt install git
+git init .
+git remote add -f origin https://github.com/dingdongyouarewrong/osmu
+git checkout Module_2
+git show :module2.txt
+git remote
+ping -c 4 192.168.1.1
+ping -c 4 192.168.1.2
+END
+
+
+Vagrant.configure(2) do |config|
+    config.vm.box = "ubuntu/trusty64"
+    config.vm.box_check_update = false
+
+
+    config.vm.define "ubuntu1" do |ubuntu1|
+        ubuntu1.vm.network  "public_network", ip: "192.168.1.1"
+        ubuntu1.vm.hostname = "dmitry_nazarov_ubuntu1"
+        ubuntu1.vm.provider "virtualbox" do |vb|
+           vb.memory = "1024"
+        end
+
+    end
+
+
+    config.vm.define "ubuntu2" do |ubuntu2|
+        ubuntu2.vm.network "public_network", ip: "192.168.1.2"
+        ubuntu2.vm.hostname = "dmitry_nazarov_ubuntu2"
+        ubuntu2.vm.provider "virtualbox" do |vb|
+            vb.memory = "1024"
+        end
+    end
+
+    config.vm.provision "shell", inline: $script
+
+end
