@@ -1,10 +1,9 @@
-$mach_quant = STDIN.gets.chomp
+mach_quant = 3
 
 
-
-if mach_quant>253 and mach_quant<1:
+if mach_quant>253 && mach_quant<1 then
     puts "wrong number"
-else:
+else
     Vagrant.configure("2") do |config|
 
         config.vm.provider "virtualbox" do |vb|
@@ -17,7 +16,7 @@ else:
 
         config.vm.provision "shell", inline: $script
 
-     end
+    end
 
     (1..$mach_quant).each do |i|
         config.vm.define "node#{i}" do |node|
@@ -28,13 +27,18 @@ else:
                     inline: "sudo apt install nginx"
             else
                 node.vm.provision "shell",
-
                 inline: "sudo apt install tomcat9 tomcat9-admin"
-                sudo ufw allow from any to any port 8080 proto tcp
-                cd /usr/local/tomcat9/webapps/ROOT
-                touch index.html
-                echo 'Hi! This is computer number #{i} with ip 192.168.1.#{i}' > index.html
-                sudo systemctl enable tomcat"
+                node.vm.provision "shell",
+                inline: "sudo ufw allow from any to any port 8080 proto tcp"
+                node.vm.provision "shell",
+                inline: "cd /usr/local/tomcat9/webapps/ROOT"
+                node.vm.provision "shell",
+                inline: "touch index.html"
+                node.vm.provision "shell",
+                inline: "echo 'Hi! This is computer number #{i} with ip 192.168.1.#{i}' > index.html"
+                node.vm.provision "shell",
+                inline: "sudo systemctl enable tomcat"
+            end
         end
 
     end
@@ -42,5 +46,7 @@ else:
     (1..$mach_quant).each do |i|
         config.vm.define "node#{i}" do |node|
             node.vm.provision "shell", inline: "echo '192.168.1.#{i}    ubuntu#{i}' > /etc/hosts"
-
+        end
+    end
+end
 end
