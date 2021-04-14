@@ -1,36 +1,46 @@
-$script = <<END
-sudo apt-get install git -y
-
-wget https://raw.githubusercontent.com/dingdongyouarewrong/osmu/master/module2.txt
-cat module2.txt
-ping -c 4 192.168.1.1
-ping -c 4 192.168.1.2
-END
+$script = <<-SHELL
+                    sudo apt-get install git -y
+                    wget https://raw.githubusercontent.com/dingdongyouarewrong/osmu/master/module2.txt
+                    cat module2.txt
+                    ping -c 4 192.168.1.1
+                    ping -c 4 192.168.1.2
+                    SHELL
 
 
 Vagrant.configure(2) do |config|
-    config.vm.box = "ubuntu/trusty64"
-    config.vm.box_check_update = false
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.box_check_update = false
 
 
-    config.vm.define "ubuntu1" do |ubuntu1|
-        ubuntu1.vm.network  "public_network", ip: "192.168.1.1"
-        ubuntu1.vm.hostname = "dmitryNazarovUbuntu1"
-        ubuntu1.vm.provider "virtualbox" do |vb|
-           vb.memory = "1024"
-        end
+  config.vm.define "ubuntu1" do |ubuntu1|
+      ubuntu1.vm.network  "public_network", ip: "192.168.1.160"
+      ubuntu1.vm.hostname = "ubuntu1"
+      ubuntu1.vm.provider "virtualbox" do |vb|
+         vb.memory = "4096"
+      end
+      ubuntu1.vm.provision "shell",
+                    inline: "sudo apt-get install git -y"
+      ubuntu1.vm.provision "shell",
+                    inline: "wget https://raw.githubusercontent.com/dingdongyouarewrong/osmu/master/module2.txt"
+      ubuntu1.vm.provision "shell",
+                    inline: "cat module2.txt"
+  end
 
-    end
 
-
-    config.vm.define "ubuntu2" do |ubuntu2|
-        ubuntu2.vm.network "public_network", ip: "192.168.1.2"
-        ubuntu2.vm.hostname = "dmitryNazarovUbuntu2"
-        ubuntu2.vm.provider "virtualbox" do |vb|
-            vb.memory = "1024"
-        end
-    end
-
-    config.vm.provision "shell", inline: $script
+ config.vm.define "ubuntu2" do |ubuntu2|
+     ubuntu2.vm.network "public_network", ip: "192.168.1.161"
+     ubuntu2.vm.hostname = "ubuntu2"
+     ubuntu2.vm.provider "virtualbox" do |vb|
+         vb.memory = "1024"
+     end
+      ubuntu2.vm.provision "shell",
+                    inline: "sudo apt-get install git -y"
+      ubuntu2.vm.provision "shell",
+                    inline: "wget https://raw.githubusercontent.com/dingdongyouarewrong/osmu/master/module2.txt"
+      ubuntu2.vm.provision "shell",
+                    inline: "cat module2.txt"
+      ubuntu2.vm.provision "shell",
+                    inline: "ping -c 4 192.168.1.160"
+ end
 
 end
