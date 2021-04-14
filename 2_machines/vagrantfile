@@ -1,5 +1,5 @@
 $script = <<END
-sudo apt-get install git
+sudo apt-get install git -y
 
 wget https://raw.githubusercontent.com/dingdongyouarewrong/osmu/master/module2.txt
 cat module2.txt
